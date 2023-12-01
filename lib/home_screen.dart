@@ -1,3 +1,4 @@
+import 'package:flit/model/airport.dart';
 import 'package:flit/theme/theme.dart';
 import 'package:flutter/material.dart';
 import 'package:flit/model/distance_flight.dart';
@@ -10,6 +11,8 @@ class HomeScreen extends StatefulWidget {
 }
 
 class _HomeScreenState extends State<HomeScreen> {
+  Airport? selectedFromAirport;
+  Airport? selectedToAirport;
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -67,40 +70,45 @@ class _HomeScreenState extends State<HomeScreen> {
                     child: Row(
                       mainAxisAlignment: MainAxisAlignment.spaceBetween,
                       children: <Widget>[
-                        const Expanded(
-                          child: Column(
-                            children: <Widget>[
-                              Padding(
-                                padding: EdgeInsets.only(bottom: 10),
-                                child: Text(
-                                  'From',
-                                  style: TextStyle(
+                        Expanded(
+                          child: InkWell(
+                            onTap: (){
+                                _showFromAirportSelection(context);
+                              },
+                            child: Column(
+                              children: <Widget>[
+                                const Padding(
+                                  padding: EdgeInsets.only(bottom: 10),
+                                  child: Text(
+                                    'From',
+                                    style: TextStyle(
+                                      color: flitWhiteBackgroundColor,
+                                      fontFamily: 'Poppins',
+                                      fontWeight: light,
+                                      fontSize: 10,
+                                    ),
+                                  ),
+                                ),
+                                Text(
+                                  selectedFromAirport != null ? selectedFromAirport!.nameAirport : 'Select',
+                                  style: const TextStyle(
                                     color: flitWhiteBackgroundColor,
                                     fontFamily: 'Poppins',
-                                    fontWeight: light,
+                                    fontWeight: semibold,
+                                    fontSize: 20,
+                                  ),
+                                ),
+                                Text(
+                                  selectedFromAirport != null ? selectedFromAirport!.nameCity : 'City',
+                                  style: const TextStyle(
+                                    color: flitWhiteBackgroundColor,
+                                    fontFamily: 'Poppins',
+                                    fontWeight: regular,
                                     fontSize: 10,
                                   ),
                                 ),
-                              ),
-                              Text(
-                                'YIA',
-                                style: TextStyle(
-                                  color: flitWhiteBackgroundColor,
-                                  fontFamily: 'Poppins',
-                                  fontWeight: semibold,
-                                  fontSize: 20,
-                                ),
-                              ),
-                              Text(
-                                'Yogyakarta (JOG)',
-                                style: TextStyle(
-                                  color: flitWhiteBackgroundColor,
-                                  fontFamily: 'Poppins',
-                                  fontWeight: regular,
-                                  fontSize: 10,
-                                ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                         Expanded(
@@ -110,40 +118,45 @@ class _HomeScreenState extends State<HomeScreen> {
                             height: 30,
                           ),
                         ),
-                        const Expanded(
-                          child: Column(
-                            children: <Widget>[
-                              Padding(
-                                padding: EdgeInsets.only(bottom: 10),
-                                child: Text(
-                                  'To',
-                                  style: TextStyle(
+                        Expanded(
+                          child: InkWell(
+                            onTap: (){
+                              _showToAirportSelection(context);
+                            },
+                            child: Column(
+                              children: <Widget>[
+                                const Padding(
+                                  padding: EdgeInsets.only(bottom: 10),
+                                  child: Text(
+                                    'To',
+                                    style: TextStyle(
+                                      color: flitWhiteBackgroundColor,
+                                      fontFamily: 'Poppins',
+                                      fontWeight: light,
+                                      fontSize: 10,
+                                    ),
+                                  ),
+                                ),
+                                Text(
+                                  selectedToAirport != null ? selectedToAirport!.nameAirport : 'Select',
+                                  style: const TextStyle(
+                                    color: flitVariantOrange,
+                                    fontFamily: 'Poppins',
+                                    fontWeight: semibold,
+                                    fontSize: 20,
+                                  ),
+                                ),
+                                Text(
+                                  selectedToAirport != null ? selectedToAirport!.nameCity : 'City',
+                                  style: const TextStyle(
                                     color: flitWhiteBackgroundColor,
                                     fontFamily: 'Poppins',
-                                    fontWeight: light,
+                                    fontWeight: regular,
                                     fontSize: 10,
                                   ),
                                 ),
-                              ),
-                              Text(
-                                'Select',
-                                style: TextStyle(
-                                  color: flitVariantOrange,
-                                  fontFamily: 'Poppins',
-                                  fontWeight: semibold,
-                                  fontSize: 20,
-                                ),
-                              ),
-                              Text(
-                                'City',
-                                style: TextStyle(
-                                  color: flitWhiteBackgroundColor,
-                                  fontFamily: 'Poppins',
-                                  fontWeight: regular,
-                                  fontSize: 10,
-                                ),
-                              ),
-                            ],
+                              ],
+                            ),
                           ),
                         ),
                       ],
@@ -211,6 +224,66 @@ class _HomeScreenState extends State<HomeScreen> {
         ),
       ),
     );
+  }
+
+  _showFromAirportSelection(BuildContext context) async {
+    selectedFromAirport = await showDialog(
+      context: context, 
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Select the Airport'),
+          content: SizedBox(
+            width: double.maxFinite,
+            child: ListView.builder(
+              itemCount: airportList.length,
+              itemBuilder: (context, index){
+                return ListTile(
+                  title: Text(airportList[index].nameAirport),
+                  subtitle: Text(airportList[index].nameCity),
+                  onTap: (){
+                    Navigator.pop(context, airportList[index]);
+                  },
+                );
+              },
+            ),
+          ),
+        );
+      }
+    );
+
+    if (selectedFromAirport != null) {
+      setState(() {});
+    }
+  }
+
+  _showToAirportSelection(BuildContext context) async {
+    selectedToAirport = await showDialog(
+      context: context, 
+      builder: (BuildContext context) {
+        return AlertDialog(
+          title: const Text('Select the Airport'),
+          content: SizedBox(
+            width: double.maxFinite,
+            child: ListView.builder(
+              itemCount: airportList.length,
+              itemBuilder: (context, index){
+                return ListTile(
+                  title: Text(airportList[index].nameAirport),
+                  subtitle: Text(airportList[index].nameCity),
+                  onTap: (){
+                    Navigator.pop(context, airportList[index]);
+                  },
+                );
+              },
+            ),
+          ),
+        );
+      }
+    );
+
+    if (selectedFromAirport != null) {
+      setState(() {});
+    }
   }
 }
 
